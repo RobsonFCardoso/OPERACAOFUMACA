@@ -233,7 +233,7 @@
   </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyiVUz1UVYIqk2uH93-5BrUJXDa3olPfQYV23YOlA6xjLcDia8WY_zOsziveQxaP8fmDQ/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyiVUz1UVYlqk2uH93-5BrUJXdA3oIPfqYV23Y0lA6xjLcDIa8WY_zOsziveQxaP8fmDQ/exec";
   let textoMensagemGlobal = "";
 
   function fileToBase64(file) {
@@ -309,7 +309,6 @@
       else if (status === "REPROVADO") emojiStatus = "❌";
       else if (status === "LIBERADO") emojiStatus = "🟢";
 
-      // Mensagem idêntica à do Apps Script (os links das fotos ficam salvos na planilha da Coluna K para consulta rápida, e os dados essenciais vão direto no chat)
       textoMensagemGlobal = "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
                             "_____________\n\n" +
                             "📋 *ID do Registro:* " + idOperacao + "\n" +
@@ -319,7 +318,6 @@
                             "⏰ *Hora:* " + horaStr + "\n" +
                             emojiStatus + " *Status:* " + status + "\n" +
                             "_____________\n\n" +
-                            "📂 *Nota:* As mídias e o relatório completo estão salvos na pasta 'Midia_Fumaca' e na planilha.\n\n" +
                             "_Emitido via Sistema de Vistorias e Registros._";
 
       var linkWsp = "https://api.whatsapp.com/send?phone=5511974987081&text=" + encodeURIComponent(textoMensagemGlobal);
