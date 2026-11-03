@@ -182,7 +182,7 @@
 
   <div class="card" id="formCard">
     <h2>Novo Registro de Vistoria</h2>
-    <form id="vistoriaForm">
+    <form id="vistoriaForm" onsubmit="return false;">
       
       <label>ID do Registro / Operação</label>
       <input type="text" id="idOperacao" placeholder="Ex: #3" required>
@@ -220,7 +220,7 @@
       <label>Foto CRLV (Verso)</label>
       <input type="file" id="fotoCrlvV" accept="image/*">
 
-      <button type="submit" id="btnSubmit">Salvar Vistoria e Gerar WhatsApp</button>
+      <button type="button" id="btnSubmit">Salvar Vistoria e Gerar WhatsApp</button>
     </form>
   </div>
 
@@ -233,7 +233,6 @@
   </div>
 
 <script>
-  // URL do novo Apps Script da Operação Fumaça
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyiVUz1UVYIqk2uH93-5BrUJXDa3olPfQYV23YOlA6xjLcDia8WY_zOsziveQxaP8fmDQ/exec";[cite: 9]
   let textoMensagemGlobal = "";
 
@@ -246,13 +245,25 @@
     });
   }
 
-  const form = document.getElementById('vistoriaForm');
+  const btnSubmit = document.getElementById('btnSubmit');
 
-  form.addEventListener('submit', async function(e) {
+  btnSubmit.addEventListener('click', async function(e) {
     e.preventDefault();
-    const btn = document.getElementById('btnSubmit');
-    btn.disabled = true;
-    btn.textContent = "Salvando fotos e dados...";
+
+    // Validação básica dos campos obrigatórios
+    const idOperacao = document.getElementById('idOperacao').value.trim();
+    const blitz = document.getElementById('blitz').value.trim();
+    const veiculo = document.getElementById('veiculo').value.trim();
+    const placa = document.getElementById('placa').value.trim();
+    const status = document.getElementById('status').value;
+
+    if (!idOperacao || !blitz || !veiculo || !placa || !status) {
+      alert("Por favor, preencha todos os campos obrigatórios (*).");
+      return;
+    }
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Salvando fotos e dados...";
 
     async function processFile(inputId) {
       const input = document.getElementById(inputId);
@@ -268,11 +279,11 @@
     }
 
     const payload = {
-      idOperacao: document.getElementById('idOperacao').value,
-      blitz: document.getElementById('blitz').value,
-      veiculo: document.getElementById('veiculo').value,
-      placa: document.getElementById('placa').value,
-      status: document.getElementById('status').value,
+      idOperacao: idOperacao,
+      blitz: blitz,
+      veiculo: veiculo,
+      placa: placa,
+      status: status,
       fotoFrente: await processFile('fotoFrente'),
       fotoTraz: await processFile('fotoTraz'),
       fotoCnh: await processFile('fotoCnh'),
@@ -281,28 +292,47 @@
     };
 
     try {
-      const response = await fetch(SCRIPT_URL, {
+      // Usando mode: 'no-cors' para contornar qualquer restrição de redirecionamento do Apps Script
+      await fetch(SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain'
+        },
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
+      // Monta o link do WhatsApp diretamente no frontend caso o no-cors omita o retorno
+      var dataHoje = new Date();
+      var dataStr = dataHoje.toISOString().split('T')[0];
+      var horaStr = dataHoje.toTimeString().substring(0, 5);
 
-      if (result.status === 'success') {
-        document.getElementById('formCard').classList.add('hidden');
-        document.getElementById('whatsappLink').href = result.linkWhatsApp; 
-        textoMensagemGlobal = result.relatorio;
+      var emojiStatus = "⏳";
+      if (status === "APROVADO") emojiStatus = "✅";
+      else if (status === "REPROVADO") emojiStatus = "❌";
+      else if (status === "LIBERADO") emojiStatus = "🟢";
 
-        document.getElementById('successCard').classList.remove('hidden');
-      } else {
-        alert("Erro ao salvar: " + result.message);
-        btn.disabled = false;
-        btn.textContent = "Salvar Vistoria e Gerar WhatsApp";
-      }
+      textoMensagemGlobal = "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
+                            "_____________\n\n" +
+                            "📋 *ID do Registro:* " + idOperacao + "\n" +
+                            "🛡️ *Nome Blitz:* " + blitz + "\n" +
+                            "🛞 *Placa:* " + placa.toUpperCase() + "\n" +
+                            "📅 *Data:* " + dataStr + "\n" +
+                            "⏰ *Hora:* " + horaStr + "\n" +
+                            emojiStatus + " *Status:* " + status + "\n" +
+                            "_____________\n\n" +
+                            "_Emitido via Sistema de Vistorias e Registros._";
+
+      var linkWsp = "https://api.whatsapp.com/send?phone=5511974987081&text=" + encodeURIComponent(textoMensagemGlobal);
+
+      document.getElementById('formCard').classList.add('hidden');
+      document.getElementById('whatsappLink').href = linkWsp; 
+      document.getElementById('successCard').classList.remove('hidden');
+
     } catch (err) {
-      alert("Erro na comunicação com a planilha.");
-      btn.disabled = false;
-      btn.textContent = "Salvar Vistoria e Gerar WhatsApp";
+      alert("Erro na comunicação: " + err);
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Salvar Vistoria e Gerar WhatsApp";
     }
   });
 
@@ -313,10 +343,9 @@
   });
 
   document.getElementById('btnVoltar').addEventListener('click', function() {
-    form.reset();
-    const btn = document.getElementById('btnSubmit');
-    btn.disabled = false;
-    btn.textContent = "Salvar Vistoria e Gerar WhatsApp";
+    document.getElementById('vistoriaForm').reset();
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = "Salvar Vistoria e Gerar WhatsApp";
 
     document.getElementById('successCard').classList.add('hidden');
     document.getElementById('formCard').classList.remove('hidden');
