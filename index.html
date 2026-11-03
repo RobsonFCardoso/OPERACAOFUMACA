@@ -2,296 +2,717 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Vistoria Veicular - Operação Fumaça</title>
+  <meta name="theme-color" content="#0f172a">
   <style>
     :root {
-      --primary-color: #0056f6;
-      --primary-hover: #0043bd;
-      --bg-color: #f0f2f5;
-      --card-bg: #ffffff;
-      --text-main: #1a1a1a;
-      --text-muted: #555555;
-      --border-color: #d1d5db;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --input-bg: #1f2937;
+      --input-border: #374151;
+      --success: #10b981;
+      --danger: #ef4444;
+      --amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 16px;
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 12px;
     }
 
-    .header-app {
+    .container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .app-header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 14px 16px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .app-header .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
-      background: var(--card-bg);
-      padding: 12px 16px;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    .header-app .icon {
-      background: #e6f0ff;
-      color: var(--primary-color);
-      font-size: 24px;
-      padding: 10px;
+    .app-header .icon-wrap {
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 10px;
+      font-size: 20px;
     }
 
-    .header-app h1 {
-      font-size: 1.1rem;
-      margin: 0;
-      color: var(--text-main);
+    .app-header h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
     }
 
-    .header-app p {
-      font-size: 0.8rem;
-      margin: 2px 0 0 0;
+    .app-header p {
+      font-size: 0.75rem;
       color: var(--text-muted);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.2);
     }
 
     .card {
       background: var(--card-bg);
-      padding: 20px;
+      border: 1px solid var(--card-border);
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      margin-top: 0;
-      color: var(--text-main);
-      font-size: 1.15rem;
-      border-bottom: 2px solid #f0f2f5;
-      padding-bottom: 12px;
+      padding: 18px;
       margin-bottom: 16px;
     }
 
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #93c5fd;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-group {
+      margin-bottom: 14px;
+    }
+
     label {
-      font-weight: 600;
       display: block;
-      margin-top: 14px;
-      font-size: 0.85rem;
-      color: #374151;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 5px;
     }
 
-    input[type="text"],
-    select {
+    .input-text, select {
       width: 100%;
-      padding: 12px;
-      margin-top: 6px;
-      box-sizing: border-box;
-      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 10px;
+      color: var(--text);
       font-size: 0.95rem;
-      background-color: #fafafa;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
 
-    input:focus, select:focus {
+    .input-text:focus, select:focus {
       outline: none;
-      border-color: var(--primary-color);
-      background-color: #fff;
-      box-shadow: 0 0 0 3px rgba(0, 86, 246, 0.15);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
     }
 
-    input[type="file"] {
-      width: 100%;
-      padding: 10px;
+    /* Placa Mercosul Display */
+    .placa-box {
+      background: #ffffff;
+      color: #000;
+      border: 2px solid #003399;
+      border-radius: 8px;
+      padding: 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       margin-top: 6px;
-      box-sizing: border-box;
-      border: 1px dashed var(--border-color);
-      border-radius: 10px;
-      font-size: 0.85rem;
-      background-color: #f9fafb;
-      cursor: pointer;
+      width: 100%;
     }
 
-    button {
-      margin-top: 22px;
+    .placa-header {
+      background: #003399;
+      color: white;
       width: 100%;
-      padding: 14px;
-      background: var(--primary-color);
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      padding: 2px 0;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .placa-input {
+      width: 100%;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      border: none;
+      background: transparent;
+      outline: none;
+      text-transform: uppercase;
+      color: #111;
+      padding: 6px 0;
+    }
+
+    /* Status Selector Grid */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .status-btn {
+      padding: 10px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .status-btn.active-teste {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #f59e0b;
+      color: #fbbf24;
+    }
+
+    .status-btn.active-aprovado {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
+      color: #34d399;
+    }
+
+    .status-btn.active-reprovado {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #f87171;
+    }
+
+    .status-btn.active-liberado {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
+      color: #22d3ee;
+    }
+
+    /* Photo Upload Grid */
+    .photo-slot {
+      background: var(--input-bg);
+      border: 1px dashed var(--input-border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .photo-info {
+      flex: 1;
+    }
+
+    .photo-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .photo-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .photo-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-camera {
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93c5fd;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .photo-preview-thumb {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #374151;
+    }
+
+    .btn-remove-photo {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* Action Buttons */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: white;
       border: none;
+      padding: 15px;
       border-radius: 12px;
       font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0, 86, 246, 0.25);
-      transition: background 0.2s;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    button:hover {
-      background: var(--primary-hover);
+    .btn-submit:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
     }
 
-    button:disabled {
-      background: #9ca3af;
-      box-shadow: none;
-    }
-
-    .hidden {
-      display: none;
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .btn-whatsapp {
-      display: block;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       background: #10b981;
       color: white;
       text-decoration: none;
-      padding: 14px;
+      padding: 15px;
       border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      margin-top: 14px;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+    }
+
+    .btn-whatsapp:hover {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: #374151;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
       font-weight: 600;
-      margin-top: 15px;
-      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
-    }
-
-    .btn-voltar {
-      background: #4b5563;
-      box-shadow: 0 4px 10px rgba(75, 85, 99, 0.2);
-    }
-
-    .aviso-copia {
-      font-size: 0.8rem;
-      color: #b91c1c;
+      cursor: pointer;
+      width: 100%;
       margin-top: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Success Card Elements */
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(16, 185, 129, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 12px auto;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .report-box {
+      background: #0b0f19;
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      color: #e5e7eb;
+      margin: 14px 0;
+      line-height: 1.4;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .banner-copied {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.75rem;
       text-align: center;
-      font-weight: 600;
-      background: #fef2f2;
       padding: 8px;
       border-radius: 8px;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
 
-  <div class="header-app">
-    <div class="icon">🚗</div>
-    <div>
-      <h1>Operação Fumaça</h1>
-      <p>Sistema de Vistorias Veiculares</p>
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="icon-wrap">🚗</div>
+        <div>
+          <h1>Operação Fumaça</h1>
+          <p>Sistema de Vistorias Veiculares</p>
+        </div>
+      </div>
+      <div class="badge-status">
+        <span>●</span> Conectado
+      </div>
+    </header>
+
+    <!-- Form Card -->
+    <div class="card" id="formCard">
+      <div class="section-title">
+        <span>🛡️</span> Dados da Operação & Blitz
+      </div>
+
+      <div class="field-group">
+        <label>ID do Registro / Operação</label>
+        <input type="text" id="idOperacao" class="input-text" placeholder="Ex: #OP-1042" required>
+      </div>
+
+      <div class="field-group">
+        <label>Nome da Blitz / Apoio *</label>
+        <input type="text" id="blitz" class="input-text" placeholder="Ex: BLITZ 10H ÀS 12H - APOIO ROMO" value="BLITZ 10H ÀS 12H - APOIO ROMO" required>
+      </div>
+
+      <div class="section-title" style="margin-top: 20px;">
+        <span>🛞</span> Identificação do Veículo
+      </div>
+
+      <div class="field-group">
+        <label>Placa do Veículo (Padrão Mercosul ou Tradicional) *</label>
+        <div class="placa-box">
+          <div class="placa-header">BRASIL</div>
+          <input type="text" id="placa" class="placa-input" placeholder="ABC1D23" maxlength="8" required>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Modelo do Veículo *</label>
+        <input type="text" id="veiculo" class="input-text" placeholder="Ex: VW Gol 1.6 / Honda Civic" required>
+      </div>
+
+      <div class="field-group">
+        <label>Status da Vistoria *</label>
+        <div class="status-grid">
+          <button type="button" class="status-btn active-teste" data-status="EM TESTE">⏳ EM TESTE</button>
+          <button type="button" class="status-btn" data-status="APROVADO">✅ APROVADO</button>
+          <button type="button" class="status-btn" data-status="REPROVADO">❌ REPROVADO</button>
+          <button type="button" class="status-btn" data-status="LIBERADO">🟢 LIBERADO</button>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top: 20px;">
+        <span>📷</span> Fotos e Documentos (Drive)
+      </div>
+
+      <!-- Photo Slot 1 -->
+      <div class="photo-slot" id="slot-fotoFrente">
+        <div class="photo-info">
+          <div class="photo-title">1. Veículo (Frente)</div>
+          <div class="photo-sub" id="sub-fotoFrente">Nenhum arquivo selecionado</div>
+        </div>
+        <div class="photo-actions">
+          <label class="btn-camera">
+            📷 Capturar
+            <input type="file" id="fotoFrente" accept="image/*" capture="environment" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- Photo Slot 2 -->
+      <div class="photo-slot" id="slot-fotoTraz">
+        <div class="photo-info">
+          <div class="photo-title">2. Veículo (Traseira)</div>
+          <div class="photo-sub" id="sub-fotoTraz">Nenhum arquivo selecionado</div>
+        </div>
+        <div class="photo-actions">
+          <label class="btn-camera">
+            📷 Capturar
+            <input type="file" id="fotoTraz" accept="image/*" capture="environment" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- Photo Slot 3 -->
+      <div class="photo-slot" id="slot-fotoCnh">
+        <div class="photo-info">
+          <div class="photo-title">3. Documento CNH</div>
+          <div class="photo-sub" id="sub-fotoCnh">Nenhum arquivo selecionado</div>
+        </div>
+        <div class="photo-actions">
+          <label class="btn-camera">
+            📷 Capturar
+            <input type="file" id="fotoCnh" accept="image/*" capture="environment" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- Photo Slot 4 -->
+      <div class="photo-slot" id="slot-fotoCrlvF">
+        <div class="photo-info">
+          <div class="photo-title">4. CRLV (Frente)</div>
+          <div class="photo-sub" id="sub-fotoCrlvF">Nenhum arquivo selecionado</div>
+        </div>
+        <div class="photo-actions">
+          <label class="btn-camera">
+            📷 Capturar
+            <input type="file" id="fotoCrlvF" accept="image/*" capture="environment" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <!-- Photo Slot 5 -->
+      <div class="photo-slot" id="slot-fotoCrlvV">
+        <div class="photo-info">
+          <div class="photo-title">5. CRLV (Verso)</div>
+          <div class="photo-sub" id="sub-fotoCrlvV">Nenhum arquivo selecionado</div>
+        </div>
+        <div class="photo-actions">
+          <label class="btn-camera">
+            📷 Capturar
+            <input type="file" id="fotoCrlvV" accept="image/*" capture="environment" class="hidden">
+          </label>
+        </div>
+      </div>
+
+      <button type="button" class="btn-submit" id="btnSubmit">
+        <span>💾</span> Salvar Vistoria e Gerar WhatsApp
+      </button>
+    </div>
+
+    <!-- Success Card -->
+    <div class="card hidden" id="successCard">
+      <div class="success-icon">✅</div>
+      <h2 style="text-align: center; font-size: 1.2rem; margin-bottom: 6px;">Vistoria Registrada!</h2>
+      <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+        Os dados foram transmitidos à planilha e salvos no Google Drive.
+      </p>
+
+      <div class="report-box" id="reportPreview"></div>
+
+      <a id="whatsappLink" href="#" target="_blank" class="btn-whatsapp">
+        <span>📲</span> Enviar Relatório via WhatsApp
+      </a>
+
+      <div class="banner-copied">
+        📋 Texto copiado para a área de transferência!
+      </div>
+
+      <button type="button" class="btn-secondary" id="btnNovaVistoria">
+        🔄 Nova Vistoria
+      </button>
     </div>
   </div>
 
-  <div class="card" id="formCard">
-    <h2>Novo Registro de Vistoria</h2>
-    <form id="vistoriaForm" onsubmit="return false;">
-      
-      <label>ID do Registro / Operação</label>
-      <input type="text" id="idOperacao" placeholder="Ex: #3" required>
-
-      <label>Nome da Blitz / Apoio *</label>
-      <input type="text" id="blitz" placeholder="Ex: BLITZ 10H ÀS 12H - APOIO ROMO" required>
-
-      <label>Modelo do Veículo *</label>
-      <input type="text" id="veiculo" placeholder="Ex: VW Gol" required>
-
-      <label>Placa do Veículo *</label>
-      <input type="text" id="placa" placeholder="Ex: ERI6201" required>
-
-      <label>Status da Vistoria *</label>
-      <select id="status" required>
-        <option value="" disabled selected>Selecione o status...</option>
-        <option value="EM TESTE">EM TESTE</option>
-        <option value="APROVADO">APROVADO</option>
-        <option value="REPROVADO">REPROVADO</option>
-        <option value="LIBERADO">LIBERADO</option>
-      </select>
-
-      <label>Foto do Veículo (Frente)</label>
-      <input type="file" id="fotoFrente" accept="image/*">
-
-      <label>Foto do Veículo (Traseira)</label>
-      <input type="file" id="fotoTraz" accept="image/*">
-
-      <label>Foto Documento CNH</label>
-      <input type="file" id="fotoCnh" accept="image/*">
-
-      <label>Foto CRLV (Frente)</label>
-      <input type="file" id="fotoCrlvF" accept="image/*">
-
-      <label>Foto CRLV (Verso)</label>
-      <input type="file" id="fotoCrlvV" accept="image/*">
-
-      <button type="button" id="btnSubmit">Salvar Vistoria e Gerar WhatsApp</button>
-    </form>
-  </div>
-
-  <div class="card hidden" id="successCard">
-    <h2>✅ Vistoria Registrada!</h2>
-    <p style="font-size: 0.9rem; color: var(--text-muted);">Os dados foram salvos na planilha e as mídias enviadas para o Google Drive.</p>
-    <a id="whatsappLink" href="#" target="_blank" class="btn-whatsapp">📲 Enviar para o WhatsApp</a>
-    <div class="aviso-copia">📋 O relatório formatado também foi copiado para a área de transferência!</div>
-    <button type="button" class="btn-voltar" id="btnVoltar">🔄 Nova Vistoria</button>
-  </div>
-
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyiVUz1UVYlqk2uH93-5BrUJXdA3oIPfqYV23Y0lA6xjLcDIa8WY_zOsziveQxaP8fmDQ/exec";
-  let textoMensagemGlobal = "";
+  // CONFIGURAÇÕES DA ARQUITETURA DESACOPLADA
+  const CONFIG = {
+    SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyiVUz1UVYlqk2uH93-5BrUJXdA3oIPfqYV23Y0lA6xjLcDIa8WY_zOsziveQxaP8fmDQ/exec",
+    WHATSAPP_PHONE: "5511974987081"
+  };
 
-  function fileToBase64(file) {
+  let currentStatus = "EM TESTE";
+  let filesCache = {
+    fotoFrente: null,
+    fotoTraz: null,
+    fotoCnh: null,
+    fotoCrlvF: null,
+    fotoCrlvV: null
+  };
+  let globalWhatsAppText = "";
+
+  // Auto-gerar ID inicial
+  function generateId() {
+    const num = Math.floor(1000 + Math.random() * 9000);
+    return "#OP-" + num;
+  }
+  document.getElementById('idOperacao').value = generateId();
+
+  // Status buttons selector
+  document.querySelectorAll('.status-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.status-btn').forEach(b => {
+        b.className = 'status-btn';
+      });
+      const st = btn.dataset.status;
+      currentStatus = st;
+      if (st === 'EM TESTE') btn.classList.add('active-teste');
+      else if (st === 'APROVADO') btn.classList.add('active-aprovado');
+      else if (st === 'REPROVADO') btn.classList.add('active-reprovado');
+      else if (st === 'LIBERADO') btn.classList.add('active-liberado');
+    });
+  });
+
+  // Placa formatting
+  const placaInput = document.getElementById('placa');
+  placaInput.addEventListener('input', (e) => {
+    let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (val.length > 7) val = val.substring(0, 7);
+    e.target.value = val;
+  });
+
+  // Client-side image compressor (prevents Google Apps Script timeout)
+  function compressImage(file, maxWidth = 1280, quality = 0.8) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxWidth || height > maxWidth) {
+            if (width > height) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            } else {
+              width = Math.round((width * maxWidth) / height);
+              height = maxWidth;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl);
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
+  // Setup photo inputs
+  ['fotoFrente', 'fotoTraz', 'fotoCnh', 'fotoCrlvF', 'fotoCrlvV'].forEach(id => {
+    const input = document.getElementById(id);
+    const sub = document.getElementById('sub-' + id);
+    const slot = document.getElementById('slot-' + id);
+
+    input.addEventListener('change', async (e) => {
+      if (e.target.files.length > 0) {
+        const file = e.target.files[0];
+        sub.textContent = "Comprimindo imagem...";
+        try {
+          const compressedBase64 = await compressImage(file);
+          filesCache[id] = {
+            name: file.name,
+            mimeType: "image/jpeg",
+            data: compressedBase64
+          };
+          sub.textContent = "✅ Anexado (" + Math.round(compressedBase64.length / 1024) + " KB)";
+          sub.style.color = "#34d399";
+        } catch (err) {
+          sub.textContent = "Erro na imagem: " + err.message;
+          sub.style.color = "#ef4444";
+        }
+      }
+    });
+  });
+
+  // Submit Handler
   const btnSubmit = document.getElementById('btnSubmit');
-
-  btnSubmit.addEventListener('click', async function(e) {
-    e.preventDefault();
-
+  btnSubmit.addEventListener('click', async () => {
     const idOperacao = document.getElementById('idOperacao').value.trim();
     const blitz = document.getElementById('blitz').value.trim();
     const veiculo = document.getElementById('veiculo').value.trim();
     const placa = document.getElementById('placa').value.trim();
-    const status = document.getElementById('status').value;
 
-    if (!idOperacao || !blitz || !veiculo || !placa || !status) {
-      alert("Por favor, preencha todos os campos obrigatórios (*).");
+    if (!idOperacao || !blitz || !veiculo || !placa) {
+      alert("Por favor, preencha todos os campos obrigatórios (*)");
       return;
     }
 
     btnSubmit.disabled = true;
-    btnSubmit.textContent = "Salvando fotos e dados...";
-
-    async function processFile(inputId) {
-      const input = document.getElementById(inputId);
-      if (input.files.length > 0) {
-        const file = input.files[0];
-        return {
-          name: file.name,
-          mimeType: file.type,
-          data: await fileToBase64(file)
-        };
-      }
-      return null;
-    }
+    btnSubmit.innerHTML = "⏳ Enviando ao Google Apps Script...";
 
     const payload = {
       idOperacao: idOperacao,
       blitz: blitz,
       veiculo: veiculo,
-      placa: placa,
-      status: status,
-      fotoFrente: await processFile('fotoFrente'),
-      fotoTraz: await processFile('fotoTraz'),
-      fotoCnh: await processFile('fotoCnh'),
-      fotoCrlvF: await processFile('fotoCrlvF'),
-      fotoCrlvV: await processFile('fotoCrlvV')
+      placa: placa.toUpperCase(),
+      status: currentStatus,
+      whatsappPhone: CONFIG.WHATSAPP_PHONE,
+      fotoFrente: filesCache.fotoFrente,
+      fotoTraz: filesCache.fotoTraz,
+      fotoCnh: filesCache.fotoCnh,
+      fotoCrlvF: filesCache.fotoCrlvF,
+      fotoCrlvV: filesCache.fotoCrlvV
     };
 
     try {
-      await fetch(SCRIPT_URL, {
+      // Envio via no-cors para evitar restrições de CORS do navegador com Apps Script
+      await fetch(CONFIG.SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
@@ -300,54 +721,79 @@
         body: JSON.stringify(payload)
       });
 
-      var dataHoje = new Date();
-      var dataStr = dataHoje.toISOString().split('T')[0];
-      var horaStr = dataHoje.toTimeString().substring(0, 5);
+      const dataHoje = new Date();
+      const dataStr = dataHoje.toLocaleDateString('pt-BR');
+      const horaStr = dataHoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-      var emojiStatus = "⏳";
-      if (status === "APROVADO") emojiStatus = "✅";
-      else if (status === "REPROVADO") emojiStatus = "❌";
-      else if (status === "LIBERADO") emojiStatus = "🟢";
+      let emojiStatus = "⏳";
+      if (currentStatus === "APROVADO") emojiStatus = "✅";
+      else if (currentStatus === "REPROVADO") emojiStatus = "❌";
+      else if (currentStatus === "LIBERADO") emojiStatus = "🟢";
 
-      textoMensagemGlobal = "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
-                            "_____________\n\n" +
-                            "📋 *ID do Registro:* " + idOperacao + "\n" +
-                            "🛡️ *Nome Blitz:* " + blitz + "\n" +
-                            "🛞 *Placa:* " + placa.toUpperCase() + "\n" +
-                            "📅 *Data:* " + dataStr + "\n" +
-                            "⏰ *Hora:* " + horaStr + "\n" +
-                            emojiStatus + " *Status:* " + status + "\n" +
-                            "_____________\n\n" +
-                            "_Emitido via Sistema de Vistorias e Registros._";
+      const fotos = [];
+      if (filesCache.fotoFrente) fotos.push('• Frente do Veículo: [Enviado]');
+      if (filesCache.fotoTraz) fotos.push('• Traseira do Veículo: [Enviado]');
+      if (filesCache.fotoCnh) fotos.push('• CNH do Condutor: [Enviado]');
+      if (filesCache.fotoCrlvF) fotos.push('• CRLV (Frente): [Enviado]');
+      if (filesCache.fotoCrlvV) fotos.push('• CRLV (Verso): [Enviado]');
 
-      var linkWsp = "https://api.whatsapp.com/send?phone=5511974987081&text=" + encodeURIComponent(textoMensagemGlobal);
+      const fotosStr = fotos.length > 0 ? "\n📷 *Fotos e Documentos:*\n" + fotos.join('\n') + "\n" : "";
+
+      globalWhatsAppText = 
+        "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
+        "_____________\n\n" +
+        "📋 *ID do Registro:* " + idOperacao + "\n" +
+        "🛡️ *Nome Blitz:* " + blitz + "\n" +
+        "🛞 *Placa:* " + placa.toUpperCase() + "\n" +
+        "🚘 *Veículo:* " + veiculo + "\n" +
+        "📅 *Data:* " + dataStr + "\n" +
+        "⏰ *Hora:* " + horaStr + "\n" +
+        emojiStatus + " *Status:* " + currentStatus + "\n" +
+        "_____________\n" +
+        fotosStr +
+        "\n_Emitido via Sistema de Vistorias e Registros._";
+
+      const wspLink = "https://api.whatsapp.com/send?phone=" + CONFIG.WHATSAPP_PHONE + "&text=" + encodeURIComponent(globalWhatsAppText);
+
+      document.getElementById('reportPreview').textContent = globalWhatsAppText;
+      document.getElementById('whatsappLink').href = wspLink;
+
+      // Copiar automaticamente
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(globalWhatsAppText).catch(() => {});
+      }
 
       document.getElementById('formCard').classList.add('hidden');
-      document.getElementById('whatsappLink').href = linkWsp; 
       document.getElementById('successCard').classList.remove('hidden');
 
     } catch (err) {
-      alert("Erro na comunicação: " + err);
+      alert("Erro ao enviar: " + err.message);
       btnSubmit.disabled = false;
-      btnSubmit.textContent = "Salvar Vistoria e Gerar WhatsApp";
+      btnSubmit.innerHTML = "<span>💾</span> Salvar Vistoria e Gerar WhatsApp";
     }
   });
 
-  document.getElementById('whatsappLink').addEventListener('click', function() {
-    navigator.clipboard.writeText(textoMensagemGlobal).catch(err => {
-      console.log('Erro ao copiar texto: ', err);
+  // Nova Vistoria
+  document.getElementById('btnNovaVistoria').addEventListener('click', () => {
+    document.getElementById('idOperacao').value = generateId();
+    document.getElementById('veiculo').value = '';
+    document.getElementById('placa').value = '';
+    
+    // Reset file cache and labels
+    ['fotoFrente', 'fotoTraz', 'fotoCnh', 'fotoCrlvF', 'fotoCrlvV'].forEach(id => {
+      filesCache[id] = null;
+      document.getElementById(id).value = '';
+      const sub = document.getElementById('sub-' + id);
+      sub.textContent = "Nenhum arquivo selecionado";
+      sub.style.color = "var(--text-muted)";
     });
-  });
 
-  document.getElementById('btnVoltar').addEventListener('click', function() {
-    document.getElementById('vistoriaForm').reset();
     btnSubmit.disabled = false;
-    btnSubmit.textContent = "Salvar Vistoria e Gerar WhatsApp";
+    btnSubmit.innerHTML = "<span>💾</span> Salvar Vistoria e Gerar WhatsApp";
 
     document.getElementById('successCard').classList.add('hidden');
     document.getElementById('formCard').classList.remove('hidden');
   });
 </script>
-
 </body>
 </html>
