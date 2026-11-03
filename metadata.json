@@ -1,0 +1,6 @@
+{
+  "name": "Operação Fumaça - Vistoria Veicular",
+  "description": "WebApp mobile moderno para registro de vistorias veiculares desacoplado com Google Apps Script, Google Planilhas, Google Drive e WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

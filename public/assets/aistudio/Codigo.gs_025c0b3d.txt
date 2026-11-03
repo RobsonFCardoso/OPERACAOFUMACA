@@ -1,0 +1,125 @@
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var data = JSON.parse(e.postData.contents);
+
+    var timestamp = new Date();
+    var timestampStr = Utilities.formatDate(timestamp, "GMT-03:00", "yyyy-MM-dd_HH-mm-ss");
+    var dataStr = Utilities.formatDate(timestamp, "GMT-03:00", "yyyy-MM-dd");
+    var horaStr = Utilities.formatDate(timestamp, "GMT-03:00", "HH:mm");
+
+    // Dados do formulário
+    var idOperacao = data.idOperacao || "#" + Math.floor(Math.random() * 1000);
+    var blitz = data.blitz || "BLITZ OPERACIONAL";
+    var veiculo = data.veiculo || "";
+    var placa = data.placa ? data.placa.toUpperCase() : "";
+    var status = data.status || "EM TESTE";
+    
+    var fotoFrenteUrl = "";
+    var fotoTrazUrl = "";
+    var fotoCnhUrl = "";
+    var fotoCrlvFUrl = "";
+    var fotoCrlvVUrl = "";
+
+    function salvarArquivoNoDrive(fileDataObj, sufixoNome) {
+      if (!fileDataObj || !fileDataObj.data) return "";
+      
+      var folderName = "Midia_Fumaca";
+      var folders = DriveApp.getFoldersByName(folderName);
+      var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
+
+      var placaLimpa = placa ? placa.replace(/[^a-zA-Z0-9]/g, "_") : "VEICULO";
+      var ext = fileDataObj.name.split('.').pop();
+      var novoNome = timestampStr + "_" + placaLimpa + "_" + sufixoNome + "." + ext;
+
+      var decoded = Utilities.base64Decode(fileDataObj.data.split(',')[1]);
+      var blob = Utilities.newBlob(decoded, fileDataObj.mimeType, novoNome);
+
+      var file = folder.createFile(blob);
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      return file.getUrl();
+    }
+
+    // Processa os uploads das 5 fotos
+    fotoFrenteUrl = salvarArquivoNoDrive(data.fotoFrente, "Veiculo_Frente");
+    fotoTrazUrl = salvarArquivoNoDrive(data.fotoTraz, "Veiculo_Traz");
+    fotoCnhUrl = salvarArquivoNoDrive(data.fotoCnh, "Documento_CNH");
+    fotoCrlvFUrl = salvarArquivoNoDrive(data.fotoCrlvF, "CRLV_Frente");
+    fotoCrlvVUrl = salvarArquivoNoDrive(data.fotoCrlvV, "CRLV_Verso");
+
+    // Link do WhatsApp direcionado direto para o número configurado com a mensagem pronta
+    var linkWhatsApp = "https://api.whatsapp.com/send?phone=5511974987081&text=" + encodeURIComponent(
+      "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
+      "_____________\n\n" +
+      "📋 *ID do Registro:* " + idOperacao + "\n" +
+      "🛡️ *Nome Blitz:* " + blitz + "\n" +
+      "🛞 *Placa:* " + placa + "\n" +
+      "📅 *Data:* " + dataStr + "\n" +
+      "⏰ *Hora:* " + horaStr + "\n" +
+      "Status: " + status + "\n" +
+      "_____________\n\n" +
+      "📷 *Fotos e Documentos:* \n" +
+      (fotoFrenteUrl ? "• Frente: " + fotoFrenteUrl + "\n" : "") +
+      (fotoTrazUrl ? "• Traseira: " + fotoTrazUrl + "\n" : "") +
+      (fotoCnhUrl ? "• CNH: " + fotoCnhUrl + "\n" : "") +
+      (fotoCrlvFUrl ? "• CRLV (Frente): " + fotoCrlvFUrl + "\n" : "") +
+      (fotoCrlvVUrl ? "• CRLV (Verso): " + fotoCrlvVUrl + "\n" : "") +
+      "\n_Emitido via Sistema de Vistorias e Registros._"
+    );
+
+    // Salva na planilha (Aba OPERACA) incluindo a Coluna K (WHATSAPP)
+    var sheetOperacao = ss.getSheetByName("OPERACA") || ss.getSheets()[0];
+    sheetOperacao.appendRow([
+      idOperacao,       // Coluna A: ID_OPERACAO
+      blitz,            // Coluna B: BLITZ
+      veiculo,          // Coluna C: VEICULO
+      placa,            // Coluna D: PLACA
+      status,           // Coluna E: STATUS
+      fotoFrenteUrl,    // Coluna F: FOTO_VEICULO_FRENTE
+      fotoTrazUrl,      // Coluna G: FOTO_VEICULO_TRAZ
+      fotoCnhUrl,       // Coluna H: FOTO_DOC_CNH
+      fotoCrlvFUrl,     // Coluna I: FOTO_CRLV_F
+      fotoCrlvVUrl,     // Coluna J: FOTO_CRLV_V
+      linkWhatsApp      // Coluna K: WHATSAPP
+    ]);
+
+    // Define o emoji para o relatório exibido
+    var emojiStatus = "⏳";
+    if (status === "APROVADO") emojiStatus = "✅";
+    else if (status === "REPROVADO") emojiStatus = "❌";
+    else if (status === "LIBERADO") emojiStatus = "🟢";
+
+    var relatorioWhatsApp = "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
+                            "_____________\n\n" +
+                            "📋 *ID do Registro:* " + idOperacao + "\n" +
+                            "🛡️ *Nome Blitz:* " + blitz + "\n" +
+                            "🛞 *Placa:* " + placa + "\n" +
+                            "📅 *Data:* " + dataStr + "\n" +
+                            "⏰ *Hora:* " + horaStr + "\n" +
+                            emojiStatus + " *Status:* " + status + "\n" +
+                            "_____________\n\n" +
+                            "📷 *Fotos e Documentos:* \n" +
+                            (fotoFrenteUrl ? "• Frente: " + fotoFrenteUrl + "\n" : "") +
+                            (fotoTrazUrl ? "• Traseira: " + fotoTrazUrl + "\n" : "") +
+                            (fotoCnhUrl ? "• CNH: " + fotoCnhUrl + "\n" : "") +
+                            (fotoCrlvFUrl ? "• CRLV (Frente): " + fotoCrlvFUrl + "\n" : "") +
+                            (fotoCrlvVUrl ? "• CRLV (Verso): " + fotoCrlvVUrl + "\n" : "") +
+                            "\n_Emitido via Sistema de Vistorias e Registros._";
+
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
+      relatorio: relatorioWhatsApp,
+      linkWhatsApp: linkWhatsApp
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("API OPERACAO FUMACA ativa.");
+}
