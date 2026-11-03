@@ -250,7 +250,6 @@
   btnSubmit.addEventListener('click', async function(e) {
     e.preventDefault();
 
-    // Validação básica dos campos obrigatórios
     const idOperacao = document.getElementById('idOperacao').value.trim();
     const blitz = document.getElementById('blitz').value.trim();
     const veiculo = document.getElementById('veiculo').value.trim();
@@ -292,7 +291,6 @@
     };
 
     try {
-      // Usando mode: 'no-cors' para contornar qualquer restrição de redirecionamento do Apps Script
       await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -302,7 +300,6 @@
         body: JSON.stringify(payload)
       });
 
-      // Monta o link do WhatsApp diretamente no frontend caso o no-cors omita o retorno
       var dataHoje = new Date();
       var dataStr = dataHoje.toISOString().split('T')[0];
       var horaStr = dataHoje.toTimeString().substring(0, 5);
