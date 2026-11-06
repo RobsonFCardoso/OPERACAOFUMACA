@@ -688,13 +688,15 @@
       fotoCrlvV: filesCache.fotoCrlvV
     };
 
-try {
-      await fetch(CONFIG.SCRIPT_URL, {
+    try {
+      // Nota: Para conseguir ler o retorno (result.fotosUrls), retiramos o mode: 'no-cors'. 
+      // Certifique-se de que o Web App esteja implantado com acesso para "Qualquer pessoa" (Anyone).
+      const response = await fetch(CONFIG.SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: JSON.stringify(payload)
       });
+
+      const result = await response.json();
 
       const dataHoje = new Date();
       const dataStr = dataHoje.toLocaleDateString('pt-BR');
@@ -705,14 +707,18 @@ try {
       else if (currentStatus === "REPROVADO") emojiStatus = "❌";
       else if (currentStatus === "LIBERADO") emojiStatus = "🟢";
 
-      const fotos = [];
-      if (filesCache.fotoFrente) fotos.push('• Frente do Veículo: [Enviado]');
-      if (filesCache.fotoTraz) fotos.push('• Traseira do Veículo: [Enviado]');
-      if (filesCache.fotoCnh) fotos.push('• CNH do Condutor: [Enviado]');
-      if (filesCache.fotoCrlvF) fotos.push('• CRLV (Frente): [Enviado]');
-      if (filesCache.fotoCrlvV) fotos.push('• CRLV (Verso): [Enviado]');
+      // MONTAGEM DOS LINKS NO RELATÓRIO (Igual ao sistema de ruído)
+      const urls = result.fotosUrls || {};
+      let fotosStr = "";
+      if (urls.frente) fotosStr += "• Frente: " + urls.frente + "\n";
+      if (urls.traz) fotosStr += "• Traseira: " + urls.traz + "\n";
+      if (urls.cnh) fotosStr += "• CNH: " + urls.cnh + "\n";
+      if (urls.crlvF) fotosStr += "• CRLV (Frente): " + urls.crlvF + "\n";
+      if (urls.crlvV) fotosStr += "• CRLV (Verso): " + urls.crlvV + "\n";
 
-      const fotosStr = fotos.length > 0 ? "\n📷 *Fotos e Documentos:*\n" + fotos.join('\n') + "\n" : "";
+      if (fotosStr) {
+        fotosStr = "\n📷 *Fotos e Documentos (Drive):*\n" + fotosStr;
+      }
 
       globalWhatsAppText = 
         "🚗 *RELATÓRIO DE VISTORIA VEICULAR*\n" +
@@ -728,7 +734,7 @@ try {
         fotosStr +
         "\n_Emitido via Sistema de Vistorias e Registros._";
 
-      const wspLink = "https://api.whatsapp.com/send?phone=" + CONFIG.WHATSAPP_PHONE + "&text=" + encodeURIComponent(globalWhatsAppText);
+      const wspLink = result.linkWhatsApp || ("https://api.whatsapp.com/send?phone=" + CONFIG.WHATSAPP_PHONE + "&text=" + encodeURIComponent(globalWhatsAppText));
 
       document.getElementById('reportPreview').textContent = globalWhatsAppText;
       document.getElementById('whatsappLink').href = wspLink;
@@ -745,26 +751,6 @@ try {
       btnSubmit.disabled = false;
       btnSubmit.innerHTML = "<span>💾</span> Salvar Vistoria e Gerar WhatsApp";
     }
-  });
-
-  document.getElementById('btnNovaVistoria').addEventListener('click', () => {
-    document.getElementById('idOperacao').value = generateId();
-    document.getElementById('veiculo').value = '';
-    document.getElementById('placa').value = '';
-    
-    ['fotoFrente', 'fotoTraz', 'fotoCnh', 'fotoCrlvF', 'fotoCrlvV'].forEach(id => {
-      filesCache[id] = null;
-      document.getElementById(id).value = '';
-      const sub = document.getElementById('sub-' + id);
-      sub.textContent = "Nenhum arquivo selecionado";
-      sub.style.color = "var(--text-muted)";
-    });
-
-    btnSubmit.disabled = false;
-    btnSubmit.innerHTML = "<span>💾</span> Salvar Vistoria e Gerar WhatsApp";
-
-    document.getElementById('successCard').classList.add('hidden');
-    document.getElementById('formCard').classList.remove('hidden');
   });
 </script>
 </body>
