@@ -562,7 +562,7 @@
 
 <script>
   const CONFIG = {
-    SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyiVUz1UVYlqk2uH93-5BrUJXdA3oIPfqYV23Y0lA6xjLcDIa8WY_zOsziveQxaP8fmDQ/exec",
+    SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyPDh_Yzdw-J-91i0x2lHarp863y4PlM-yv0C5x_fybnx9Xi6BLuI5mU7EX0uZicAAXDg/exec",
     WHATSAPP_PHONE: "5511974987081"
   };
 
@@ -710,7 +710,7 @@
       // MONTAGEM DOS LINKS NO RELATÓRIO (Igual ao sistema de ruído)
       const urls = result.fotosUrls || {};
       let fotosStr = "";
-      if (urls.frente) fotosStr += "• Frente: " + urls.frente + "\n";
+      if (urls.frente) fotosStr += "*📋• FRENTE: *" + urls.frente + "\n";
       if (urls.traz) fotosStr += "• Traseira: " + urls.traz + "\n";
       if (urls.cnh) fotosStr += "• CNH: " + urls.cnh + "\n";
       if (urls.crlvF) fotosStr += "• CRLV (Frente): " + urls.crlvF + "\n";
